@@ -19,7 +19,7 @@
 /* Implementation dependencies */
 #include <iomanip>
 #include <iostream>
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 
 #include "SickLMS5xxMessage.hh"
 #include "SickLMS5xxUtility.hh" // for byye-order conversions where necessary
@@ -37,10 +37,10 @@ namespace SickToolbox {
   {
 
     /* Initialize the object */
-    Clear(); 
+    Clear();
 
   }
-  
+
   /**
    * \brief Another constructor.
    * \param *payload_buffer The payload for the packet as an array of bytes (including the header)
@@ -53,10 +53,10 @@ namespace SickToolbox {
   {
 
     /* Build the message object (implicit initialization) */
-    BuildMessage(payload_buffer,payload_length); 
+    BuildMessage(payload_buffer,payload_length);
 
   }
-  
+
   /**
    * \brief Another constructor.
    * \param *message_buffer A well-formed message to be parsed into the class' fields
@@ -68,7 +68,7 @@ namespace SickToolbox {
   {
 
     /* Parse the message into the container (implicit initialization) */
-    ParseMessage(message_buffer); 
+    ParseMessage(message_buffer);
 
   }
 
@@ -85,25 +85,25 @@ namespace SickToolbox {
      */
     SickMessage< SICK_LMS_5xx_MSG_HEADER_LEN, SICK_LMS_5xx_MSG_PAYLOAD_MAX_LEN, SICK_LMS_5xx_MSG_TRAILER_LEN >
       ::BuildMessage(payload_buffer,payload_length);
-    
+
     /*
      * Set the message header!
      */
     _message_buffer[0] = 0x02;                 // STX
 
     /*
-     * Set the message trailer! 
+     * Set the message trailer!
      */
     _message_buffer[_message_length-1] = 0x03; // ETX
-    
+
     /* Grab the (3-byte) command type */
-    char command_type[4] = {0};
+    char command_type[5] = {0};
     for (int i = 0; i < 3; i++) {
       command_type[i] = _message_buffer[i+1];
     }
     command_type[4] = '\0';
     _command_type = command_type;
-    
+
     /* Grab the command (max length is 14 bytes) */
     char command[15] = {0};
     int i = 0;
@@ -112,56 +112,56 @@ namespace SickToolbox {
     }
     command[i] = '\0';
     _command = command;
-    
+
   }
-  
+
   /**
    * \brief Parses a sequence of bytes into a SickLMS5xxMessage object
    * \param *message_buffer A well-formed message to be parsed into the class' fields
    */
   void SickLMS5xxMessage::ParseMessage( const uint8_t * const message_buffer ) throw (SickIOException) {
-    
+
     /* Call the parent method
      * NOTE: This method resets the object and assigns _populated as true
      */
     SickMessage< SICK_LMS_5xx_MSG_HEADER_LEN, SICK_LMS_5xx_MSG_PAYLOAD_MAX_LEN, SICK_LMS_5xx_MSG_TRAILER_LEN >
       ::ParseMessage(message_buffer);
-    
+
     /* Compute the message length */
     int i = 1;
     const char * token = NULL;
     while (message_buffer[i-1] != 0x03) {
 
       if (i == 1) {
-      
+
 	/* Grab the command type */
 	if ((token = strtok((char *)&_message_buffer[1]," ")) == NULL) {
 	  throw SickIOException("SickLMS5xxMessage::ParseMessage: strtok() failed!");
 	}
-	
+
 	_command_type = token;
-	
+
 	/* Grab the Command Code */
 	if ((token = strtok(NULL," ")) == NULL) {
 	  throw SickIOException("SickLMS5xxMessage::ParseMessage: strtok() failed!");
 	}
-	
+
 	_command = token;
-	
+
       }
-      
+
       i++; // Update message length
 
       /* A sanity check */
       if (i > SickLMS5xxMessage::MESSAGE_MAX_LENGTH) {
 	throw SickIOException("SickLMS5xxMessage::ParseMessage: Message Exceeds Max Message Length!");
       }
-      
+
     }
 
     /* Compute the total message length */
     _payload_length = _message_length - MESSAGE_HEADER_LENGTH - MESSAGE_TRAILER_LENGTH;
-    
+
     /* Copy the given packet into the buffer */
     memcpy(_message_buffer,message_buffer,_message_length);
 
@@ -178,9 +178,9 @@ namespace SickToolbox {
     /* Reset the class' additional fields */
     _command_type = "Unknown";
     _command = "Unknown";
-    
+
   }
-  
+
   /**
    * \brief Print the message contents.
    */
@@ -195,7 +195,7 @@ namespace SickToolbox {
     SickMessage< SICK_LMS_5xx_MSG_HEADER_LEN, SICK_LMS_5xx_MSG_PAYLOAD_MAX_LEN, SICK_LMS_5xx_MSG_TRAILER_LEN >::Print();
 
   }
-  
+
   SickLMS5xxMessage::~SickLMS5xxMessage( ) { }
-  
+
 } /* namespace SickToolbox */

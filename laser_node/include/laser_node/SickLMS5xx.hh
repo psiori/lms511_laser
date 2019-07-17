@@ -49,7 +49,7 @@ namespace SickToolbox {
   class SickLMS5xx : public SickLIDAR< SickLMS5xxBufferMonitor, SickLMS5xxMessage > {
 
   public:
-    
+
     static const int SICK_LMS_5XX_MAX_NUM_MEASUREMENTS = 1141;                         ///< LMS 5xx max number of measurements
 
     /*!
@@ -58,7 +58,7 @@ namespace SickToolbox {
      * This enum lists all of the Sick LMS 5xx status.
      */
     enum sick_lms_5xx_status_t {
-      
+
       SICK_LMS_5XX_STATUS_UNKNOWN = 0x00,                                              ///< LMS 5xx status undefined
       SICK_LMS_5XX_STATUS_INITIALIZATION = 0x01,                                       ///< LMS 5xx initializing
       SICK_LMS_5XX_STATUS_CONFIGURATION = 0x02,                                        ///< LMS 5xx configuration
@@ -67,20 +67,20 @@ namespace SickToolbox {
       SICK_LMS_5XX_STATUS_IN_PREP = 0x05,                                              ///< LMS 5xx in preparation
       SICK_LMS_5XX_STATUS_READY = 0x06,                                                ///< LMS 5xx is ready
       SICK_LMS_5XX_STATUS_READY_FOR_MEASUREMENT = 0x07                                 ///< LMS 5xx is ready to give measurements
-      
-    };        
-    
+
+    };
+
     /*!
      * \enum sick_lms_5xx_scan_format_t
      * \brief Defines the Sick LMS 5xx scan types
      * This enum is for specifying the desired scan returns.
      */
     enum sick_lms_5xx_scan_format_t {
-      
+
       SICK_LMS_5XX_SCAN_FORMAT_DIST = 0x00,                                             ///< Dist, no reflect
       SICK_LMS_5XX_SCAN_FORMAT_DIST_REFLECT = 0x01,                                     ///< Dist, reflection
       SICK_LMS_5XX_SCAN_FORMAT_UNKNOWN = 0xFF                                           ///< Unknown format
-      
+
     };
 
     /*!
@@ -132,7 +132,7 @@ namespace SickToolbox {
     /** Primary constructor */
     SickLMS5xx( const std::string sick_ip_address = DEFAULT_SICK_LMS_5XX_IP_ADDRESS,
                 const uint16_t sick_tcp_port = DEFAULT_SICK_LMS_5XX_TCP_PORT );
-    
+
     /** Initializes the Sick LD unit (use scan areas defined in flash) */
     void Initialize( const bool disp_banner = true ) throw( SickIOException, SickThreadException, SickTimeoutException, SickErrorException );
 
@@ -145,7 +145,7 @@ namespace SickToolbox {
 
     /** Get the Sick LMS 5xx scan frequency */
     sick_lms_5xx_scan_freq_t GetSickScanFreq( ) const throw ( SickIOException );
-    
+
     /** Get the Sick LMS 5xx scan resolution */
     sick_lms_5xx_scan_res_t GetSickScanRes( ) const throw ( SickIOException );
 
@@ -153,11 +153,11 @@ namespace SickToolbox {
     double GetSickStartAngle( ) const throw ( SickIOException );
 
     /** Get the Sick LMS 5xx scan stop angle */
-    double GetSickStopAngle( ) const throw ( SickIOException );    
+    double GetSickStopAngle( ) const throw ( SickIOException );
 
     /** Sets the sick scan data format */
     void SetSickScanDataFormat( const sick_lms_5xx_scan_format_t scan_format ) throw( SickTimeoutException, SickIOException, SickThreadException, SickErrorException );
-    
+
     /** Get the Sick Range Measurements */
     void GetSickMeasurements( unsigned int * const range_1_vals,
                               unsigned int * const range_2_vals,
@@ -180,13 +180,13 @@ namespace SickToolbox {
 
     /** Utility function for converting scan frequency to integer */
     int SickScanFreqToInt( const sick_lms_5xx_scan_freq_t scan_freq ) const;
-    
+
     /** Utility function for converting double to scan resolution */
     sick_lms_5xx_scan_res_t DoubleToSickScanRes( const double scan_res ) const;
 
     /** Utility function for converting scan resolution to double */
     double SickScanResToDouble( const sick_lms_5xx_scan_res_t scan_res ) const;
-    
+
     /** Destructor */
     ~SickLMS5xx();
 
@@ -207,7 +207,7 @@ namespace SickToolbox {
       int32_t sick_start_angle;                                                         ///< Sick scan area start angle
       int32_t sick_stop_angle;                                                          ///< Sick scan area stop angle
     } sick_lms_5xx_scan_config_t;
-    
+
     /** The Sick LMS 5xx IP address */
     std::string _sick_ip_address;
 
@@ -222,7 +222,7 @@ namespace SickToolbox {
 
     /** Sick LMS 5xx current scan data format */
     sick_lms_5xx_scan_format_t _sick_scan_format;
-    
+
     /** Sick LMS 5xx echo filter */
     sick_lms_5xx_echo_filter_t _sick_echo_filter;
 
@@ -230,16 +230,16 @@ namespace SickToolbox {
     sick_lms_5xx_status_t _sick_device_status;
 
     /** Sick LMS 5xx temperature status */
-    bool _sick_temp_safe;    
-    
+    bool _sick_temp_safe;
+
     /** Sick LMS 5xx streaming status */
     bool _sick_streaming;
-    
+
     /** Setup the connection parameters and establish TCP connection! */
     void _setupConnection( ) throw( SickIOException, SickTimeoutException );
 
     /** Re-initialized the device */
-    void _reinitialize( ) throw( SickIOException, SickThreadException, SickTimeoutException, SickErrorException );     
+    void _reinitialize( ) throw( SickIOException, SickThreadException, SickTimeoutException, SickErrorException );
 
     /** Teardown the connection to the Sick LD */
     void _teardownConnection( ) throw( SickIOException );
@@ -254,7 +254,7 @@ namespace SickToolbox {
     void _setSickScanConfig( const sick_lms_5xx_scan_freq_t scan_freq,
                              const sick_lms_5xx_scan_res_t scan_res,
                              const int start_angle, const int stop_angle ) throw( SickTimeoutException, SickIOException, SickErrorException );
-    
+
     /** Set access mode for configuring device */
     void _setAuthorizedClientAccessMode( ) throw( SickTimeoutException, SickErrorException, SickIOException );
 
@@ -263,7 +263,7 @@ namespace SickToolbox {
 
     /** Send the message w/o waiting for a reply */
     void _sendMessage( const SickLMS5xxMessage &send_message ) const throw ( SickIOException );
-    
+
     /** Send the message and grab expected reply */
     void _sendMessageAndGetReply( const SickLMS5xxMessage &send_message,
                                   SickLMS5xxMessage &recv_message,
@@ -274,7 +274,7 @@ namespace SickToolbox {
 
     /** Receive a message */
     void _recvMessage( SickLMS5xxMessage &sick_message ) const throw ( SickTimeoutException );
-    
+
     /** Start device measuring */
     void _startMeasuring( ) throw ( SickTimeoutException, SickIOException );
 
@@ -283,7 +283,7 @@ namespace SickToolbox {
 
     /** Request a data data stream type */
     void _requestDataStream( ) throw ( SickTimeoutException, SickConfigException, SickIOException );
-    
+
     /** Start streaming measurements */
     void _startStopStreamingMeasurements( bool start ) throw ( SickTimeoutException, SickIOException );
 
@@ -295,19 +295,19 @@ namespace SickToolbox {
 
     /** Sets the Sick LMS 5xx echo filter mode */
     void _setSickEchoFilter(sick_lms_5xx_echo_filter_t echo_filter) throw( SickTimeoutException, SickIOException, SickErrorException );
-    
+
     /** Restore device to measuring mode, i.e., logout of configuration mode */
     void _restoreMeasuringMode( ) throw( SickTimeoutException, SickIOException );
 
     /** Ensures a feasible scan area */
     bool _validScanArea( const int start_angle, const int stop_angle ) const;
-    
+
     /** Utility function to convert int to status */
     sick_lms_5xx_status_t _intToSickStatus( const int status ) const;
 
     /** Utility function for printing Sick scan config */
     void _printSickScanConfig( ) const;
-    
+
     /** Utility function for printing footer after initialization */
     void _printInitFooter( ) const;
 
@@ -318,8 +318,8 @@ namespace SickToolbox {
     double _convertSickAngleUnitsToDegs( const int sick_angle ) const { return ((double)sick_angle)/10000; }
 
     /** Utility function for converting sick Hz values ints */
-    unsigned int  _convertSickFreqUnitsToHz( const unsigned int sick_freq ) const { return (unsigned int)(((double)sick_freq)/100); }    
-    
+    unsigned int  _convertSickFreqUnitsToHz( const unsigned int sick_freq ) const { return (unsigned int)(((double)sick_freq)/100); }
+
     /** Utility function to convert config error int to str */
     std::string _intToSickConfigErrorStr( const int error ) const;
 
@@ -329,7 +329,7 @@ namespace SickToolbox {
 
     /** Utility function for extracting next integer from tokenized string */
     char * _convertNextTokenToUInt( char * const str_buffer, unsigned int & num_val, const char * const delimeter = " " ) const;
-    
+
     /** Utility function for extracting DIST1/DIST2/... and RSSI1/RSSI2/... measurements */
     int _readDistancesOrRSSI(char * payload_buffer, int payload_sz, const char * label, unsigned int * const range_vals);
   };
@@ -358,7 +358,7 @@ namespace SickToolbox {
    */
   typedef SickLMS5xx::sick_lms_5xx_scan_res_t sick_lms_5xx_scan_res_t;
 
-  
+
 } //namespace SickToolbox
-  
+
 #endif /* SICK_LMS_5xx_HH */
