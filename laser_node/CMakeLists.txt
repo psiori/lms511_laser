@@ -8,3 +8,4 @@ include_directories(
 )
 
 add_executable(laser_node src/lms5xx_node.cpp src/SickLMS5xx.cc src/SickLMS5xxBufferMonitor.cc src/SickLMS5xxMessage.cc)
+target_link_libraries(laser_node pthread)
