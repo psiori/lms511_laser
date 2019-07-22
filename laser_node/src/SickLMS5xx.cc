@@ -76,9 +76,9 @@ namespace SickToolbox {
     if (disp_banner) {
       std::cout << "\t*** Attempting to initialize the Sick LMS 5xx..." << std::endl;
     }
-    
+
     try {
-      
+
       /* Attempt to connect to the Sick LD */
       if (disp_banner) {
         std::cout << "\tAttempting to connect to Sick LMS 5xx @ " << _sick_ip_address << ":" << _sick_tcp_port << std::endl;
@@ -87,7 +87,7 @@ namespace SickToolbox {
       if (disp_banner) {
         std::cout << "\t\tConnected to Sick LMS 5xx!" << std::endl;
       }
-      
+
       /* Start the buffer monitor */
       if (disp_banner) {
         std::cout << "\tAttempting to start buffer monitor..." << std::endl;
@@ -96,7 +96,7 @@ namespace SickToolbox {
       if (disp_banner) {
         std::cout << "\t\tBuffer monitor started!" << std::endl;
       }
-      
+
       /* Ok, lets sync the driver with the Sick */
       if (disp_banner) {
         std::cout << "\tSyncing driver with Sick..." << std::endl;
@@ -109,7 +109,7 @@ namespace SickToolbox {
       }
 
     }
-    
+
     catch(SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
@@ -119,7 +119,7 @@ namespace SickToolbox {
       std::cerr << sick_error_exception.what() << std::endl;
       throw;
     }
-    
+
     catch(SickThreadException &sick_thread_exception) {
       std::cerr << sick_thread_exception.what() << std::endl;
       throw;
@@ -134,13 +134,13 @@ namespace SickToolbox {
       std::cerr << "SickLMS5xx::Initialize - Unknown exception!" << std::endl;
       throw;
     }
-    
+
     //std::cout << "\t\tSynchronized!" << std::endl;
     _sick_initialized = true;
 
     /* Success */
   }
-  
+
   /**
    * \brief Sets the Sick LMS 5xx scan frequency and resolution
    * \param scan_freq Desired scan frequency (e.g. SickLMS5xx::SICK_LMS_5XX_SCAN_FREQ_50)
@@ -175,25 +175,25 @@ namespace SickToolbox {
       std::cerr << sick_error_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::SetSickScanFreqAndRes: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
   }
 
   void SickLMS5xx::SetSickEchoFilter(sick_lms_5xx_echo_filter_t echo_filter)
@@ -253,7 +253,7 @@ namespace SickToolbox {
     }
 
     return IntToSickScanFreq(_convertSickFreqUnitsToHz(_sick_scan_config.sick_scan_freq));
-    
+
   }
 
   /**
@@ -267,8 +267,8 @@ namespace SickToolbox {
       throw SickIOException("SickLMS5xx::GetSickScanRes: Device NOT Initialized!!!");
     }
 
-    return DoubleToSickScanRes(_convertSickAngleUnitsToDegs(_sick_scan_config.sick_scan_res));    
-    
+    return DoubleToSickScanRes(_convertSickAngleUnitsToDegs(_sick_scan_config.sick_scan_res));
+
   }
 
   /**
@@ -283,7 +283,7 @@ namespace SickToolbox {
     }
 
     return _convertSickAngleUnitsToDegs(_sick_scan_config.sick_start_angle);
-    
+
   }
 
   /**
@@ -297,8 +297,8 @@ namespace SickToolbox {
       throw SickIOException("SickLMS5xx::GetSickStopAngle: Device NOT Initialized!!!");
     }
 
-    return _convertSickAngleUnitsToDegs(_sick_scan_config.sick_stop_angle);    
-    
+    return _convertSickAngleUnitsToDegs(_sick_scan_config.sick_stop_angle);
+
   }
 
   /**
@@ -315,44 +315,44 @@ namespace SickToolbox {
     if (scan_format == _sick_scan_format) {
       return;
     }
-    
+
     try {
-      
+
       /* Is the device streaming? */
       if (_sick_streaming ) {
         _startStopStreamingMeasurements(false);
       }
 
       std::cout << "\t*** Setting scan format " << _sickScanDataFormatToString(scan_format) << "..." << std::endl;
-      
+
       /* Set the desired data format! */
       _setSickScanDataFormat(scan_format);
 
       std::cout << "\t\tSuccess!" << std::endl;
-      
+
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::SetSickScanDataFormat: Unknown exception!!!" << std::endl;
       throw;
     }
 
     /* Success! */
-    
+
   }
-  
+
   /**
    * \brief Acquire multi-pulse sick range measurements
    * \param range_1_vals A buffer to hold the range measurements
@@ -372,12 +372,12 @@ namespace SickToolbox {
                                         unsigned int * const reflect_5_vals,
                                         unsigned int & num_measurements,
                                         unsigned int * const dev_status ) throw ( SickIOException, SickConfigException, SickTimeoutException ) {
-    
+
     /* Ensure the device has been initialized */
     if (!_sick_initialized) {
       throw SickIOException("SickLMS5xx::GetSickMeasurements: Device NOT Initialized!!!");
     }
-    
+
     try {
 
       /* Is the device already streaming? */
@@ -392,19 +392,19 @@ namespace SickToolbox {
       std::cerr << sick_config_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::GetSickMeasurements: Unknown exception!!!" << std::endl;
       throw;
@@ -412,7 +412,7 @@ namespace SickToolbox {
 
     /* Allocate receive message */
     SickLMS5xxMessage recv_message;
-    
+
     try {
       /* Grab the next message from the stream */
       _recvMessage(recv_message);
@@ -423,15 +423,15 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::GetSickMeasurements: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH+1] = {0};
-    
+
     recv_message.GetPayloadAsCStr((char *)payload_buffer);
 
     unsigned int null_int = 0;
@@ -442,7 +442,7 @@ namespace SickToolbox {
      */
     if (dev_status != NULL) {
 
-      payload_str = (char *)&payload_buffer[16];      
+      payload_str = (char *)&payload_buffer[16];
       for (unsigned int i = 0; i < 3; i++) {
         payload_str = _convertNextTokenToUInt(payload_str,null_int);
       }
@@ -484,9 +484,9 @@ namespace SickToolbox {
 //      std::cerr << "Use SetSickScanDataFormat to configure the LMS 5xx to stream these values - or - set the corresponding buffer input to NULL to avoid this warning." << std::endl;
 
     /* Success! */
-    
+
   }
-  
+
   int SickLMS5xx::_readDistancesOrRSSI(char * payload_buffer, int payload_sz, const char * label, unsigned int * const range_vals)
   {
     unsigned int substr_dist_pos = 0;
@@ -532,7 +532,7 @@ namespace SickToolbox {
     if (disp_banner) {
       std::cout << std::endl << "\t*** Attempting to uninitialize the Sick LMS 5xx..." << std::endl;
     }
-      
+
     /* If necessary, tell the Sick LD to stop streaming data */
     try {
 
@@ -564,21 +564,21 @@ namespace SickToolbox {
         std::cout << "\t\tConnection closed!" << std::endl;
         std::cout << "\t*** Uninit. complete - Sick LMS 5xx is now offline!" << std::endl;
       }
-      
+
     }
-           
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle I/O exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle a returned error code */
     catch (SickErrorException &sick_error_exception) {
       std::cerr << sick_error_exception.what() << std::endl;
@@ -590,19 +590,19 @@ namespace SickToolbox {
       std::cerr << sick_thread_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS::Uninitialize: Unknown exception!!!" << std::endl;
       throw;
-    }  
+    }
 
     /* Mark the device as uninitialized */
     _sick_initialized = false;
-  
+
     /* Success! */
   }
-  
+
   /**
    * \brief Convert integer to corresponding sick_lms_5xx_scan_freq_t
    */
@@ -635,10 +635,10 @@ namespace SickToolbox {
       return 100;
     default:
       return -1;
-    }  
+    }
 
   }
-  
+
   /**
    * \brief Convert double to corresponding sick_lms_5xx_scan_res_t
    */
@@ -658,7 +658,7 @@ namespace SickToolbox {
           else if(scan_res == 1.0   )
                   return SICK_LMS_5XX_SCAN_RES_100;
           return SICK_LMS_5XX_SCAN_RES_UNKNOWN;
-  }  
+  }
 
   /**
    * \brief Convert sick_lms_5xx_scan_res_t to corresponding double
@@ -682,9 +682,9 @@ namespace SickToolbox {
           return 1.0;
         default:
           return -1;
-    }  
+    }
   }
-  
+
   /**
    * \brief Establish a TCP connection to the unit
    */
@@ -694,10 +694,10 @@ namespace SickToolbox {
     if ((_sick_fd = socket(PF_INET,SOCK_STREAM,IPPROTO_TCP)) < 0) {
       throw SickIOException("SickLMS5xx::_setupConnection: socket() failed!");
     }
-    
+
     /* Initialize the buffer */
     memset(&_sick_inet_address_info,0,sizeof(struct sockaddr_in));
-  
+
     /* Setup the Sick LD inet address structure */
     _sick_inet_address_info.sin_family = AF_INET;                                  // Internet protocol address family
     _sick_inet_address_info.sin_port = htons(_sick_tcp_port);                      // TCP port number
@@ -705,72 +705,73 @@ namespace SickToolbox {
 
     try {
 
-      /* Set to non-blocking so we can time connect */
-      _setNonBlockingIO();
-    
-      /* Try to connect to the Sick LD */
-      int conn_return;
-      if ((conn_return = connect(_sick_fd,(struct sockaddr *)&_sick_inet_address_info,sizeof(struct sockaddr_in))) < 0) {
+        /* Set to non-blocking so we can time connect */
+        // _setNonBlockingIO();
 
-        /* Check whether it is b/c it would block */
-        if (errno != EINPROGRESS) {
-          throw SickIOException("SickLMS5xx::_setupConnection: connect() failed!");
+        /* Try to connect to the Sick LD */
+        int conn_return = connect(_sick_fd,(struct sockaddr *)&_sick_inet_address_info,sizeof(struct sockaddr_in));
+        if (conn_return == -1) {
+
+            /* Check whether it is b/c it would block */
+            if (errno != EINPROGRESS) {
+                throw SickIOException("SickLMS5xx::_setupConnection: connect() failed!");
+            }
+        } else {
+
+            /* Use select to wait on the socket */
+            int valid_opt = 0;
+            int num_active_files = 0;
+            struct timeval timeout_val = { 0 };                                  // This structure will be used for setting our timeout values
+            fd_set file_desc_set;                                        // File descriptor set for monitoring I/O
+
+            /* Initialize and set the file descriptor set for select */
+            FD_ZERO(&file_desc_set);
+            FD_SET(_sick_fd,&file_desc_set);
+
+            /* Setup the timeout structure */
+            // memset(&timeout_val,0,sizeof(timeout_val));                  // Initialize the buffer
+            // timeout_val.tv_usec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT;  // Wait for specified time before throwing a timeout
+
+            /* Wait for the OS to tell us that the connection is established! */
+            num_active_files = select(_sick_fd + 1 ,0,&file_desc_set,0,&timeout_val);
+
+            /* Figure out what to do based on the output of select */
+            if (num_active_files > 0) {
+
+                /* This is just a sanity check */
+                if (!FD_ISSET(_sick_fd,&file_desc_set)) {
+                    throw SickIOException("SickLMS5xx::_setupConnection: Unexpected file descriptor!");
+                }
+
+                /* Check for any errors on the socket - just to be sure */
+                socklen_t len = sizeof(int);
+                if (getsockopt(_sick_fd,SOL_SOCKET,SO_ERROR,(void*)(&valid_opt),&len) < 0) {
+                    throw SickIOException("SickLMS5xx::_setupConnection: getsockopt() failed!");
+                }
+
+                /* Check whether the opt value indicates error */
+                if (valid_opt) {
+                    throw SickIOException("SickLMS5xx::_setupConnection: socket error on connect()!");
+                }
+
+            }
+            else if (num_active_files == 0) {
+
+                /* A timeout has occurred! */
+                throw SickTimeoutException("SickLMS5xx::_setupConnection: select() timeout!");
+
+            }
+            else {
+
+                /* An error has occurred! */
+                throw SickIOException("SickLMS5xx::_setupConnection: select() failed!");
+
+            }
+
         }
 
-        /* Use select to wait on the socket */
-        int valid_opt = 0;
-        int num_active_files = 0;
-        struct timeval timeout_val;                                  // This structure will be used for setting our timeout values
-        fd_set file_desc_set;                                        // File descriptor set for monitoring I/O
-    
-        /* Initialize and set the file descriptor set for select */
-        FD_ZERO(&file_desc_set);
-        FD_SET(_sick_fd,&file_desc_set);
-
-        /* Setup the timeout structure */
-        memset(&timeout_val,0,sizeof(timeout_val));                  // Initialize the buffer
-        timeout_val.tv_usec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT;  // Wait for specified time before throwing a timeout
-      
-        /* Wait for the OS to tell us that the connection is established! */
-        num_active_files = select(getdtablesize(),0,&file_desc_set,0,&timeout_val);
-      
-        /* Figure out what to do based on the output of select */
-        if (num_active_files > 0) {
-
-          /* This is just a sanity check */
-          if (!FD_ISSET(_sick_fd,&file_desc_set)) {
-              throw SickIOException("SickLMS5xx::_setupConnection: Unexpected file descriptor!");
-          }
-
-          /* Check for any errors on the socket - just to be sure */
-          socklen_t len = sizeof(int);
-          if (getsockopt(_sick_fd,SOL_SOCKET,SO_ERROR,(void*)(&valid_opt),&len) < 0) {
-              throw SickIOException("SickLMS5xx::_setupConnection: getsockopt() failed!");
-          }
-
-          /* Check whether the opt value indicates error */
-          if (valid_opt) {
-            throw SickIOException("SickLMS5xx::_setupConnection: socket error on connect()!");
-          }
-
-          }
-        else if (num_active_files == 0) {
-
-          /* A timeout has occurred! */
-          throw SickTimeoutException("SickLMS5xx::_setupConnection: select() timeout!");
-
-        }
-        else {
-
-          /* An error has occurred! */
-          throw SickIOException("SickLMS5xx::_setupConnection: select() failed!");
-
-        }
-
-      }
-
-      /* Restore blocking IO */
-      _setBlockingIO();
+        /* Restore blocking IO */
+        _setBlockingIO();
 
     }
 
@@ -783,7 +784,7 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     catch(...) {
       std::cerr << "SickLMS5xx::_setupConnection - Unknown exception occurred!" << std::endl;
       throw;
@@ -800,7 +801,7 @@ namespace SickToolbox {
     try {
 
       //std::cout << "\t*** Reinitializing Sick LMS 5xx..." << std::endl;
-      
+
       /* Uninitialize the device */
       Uninitialize(false);
 
@@ -808,7 +809,7 @@ namespace SickToolbox {
       Initialize(false);
 
       //std::cout << "\t\tSuccess!" << std::endl;
-      
+
     }
 
     /* Handle a timeout! */
@@ -816,7 +817,7 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
@@ -834,26 +835,26 @@ namespace SickToolbox {
       std::cerr << sick_error_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::_reinitialize: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
   }
 
   /**
    * \brief Teardown TCP connection to Sick LMS 5xx
    */
   void SickLMS5xx::_teardownConnection( ) throw( SickIOException ) {
-     
+
      /* Close the socket! */
      if (close(_sick_fd) < 0) {
        throw SickIOException("SickLMS5xx::_teardownConnection: close() failed!");
      }
-     
+
    }
-  
+
   /**
    * \brief Get the status of the Sick LMS 5xx
    */
@@ -866,7 +867,7 @@ namespace SickToolbox {
     payload_buffer[0] = 's';
     payload_buffer[1] = 'R';
     payload_buffer[2] = 'N';
-    
+
     payload_buffer[3] = ' ';
 
     /* Set the command */
@@ -884,32 +885,32 @@ namespace SickToolbox {
 
     /* Send message and get reply using parent's method */
     try {
-      
+
       _sendMessageAndGetReply(send_message, recv_message, "sRA", "STlms");
 
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,9);
-  
+
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
 
@@ -932,7 +933,7 @@ namespace SickToolbox {
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'R';
     payload_buffer[2]  = 'N';
-    
+
     payload_buffer[3]  = ' ';
 
     /* Set the command */
@@ -945,7 +946,7 @@ namespace SickToolbox {
     payload_buffer[10] = 'n';
     payload_buffer[11] = 'c';
     payload_buffer[12] = 'f';
-    payload_buffer[13] = 'g';    
+    payload_buffer[13] = 'g';
 
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,14);
@@ -959,28 +960,28 @@ namespace SickToolbox {
       _sendMessageAndGetReply(send_message, recv_message, "sRA", "LMPscancfg");
 
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,14);
-  
+
     /* Extract the message payload */
     recv_message.GetPayloadAsCStr((char *)payload_buffer);
 
@@ -1010,11 +1011,11 @@ namespace SickToolbox {
 
     /*
      * Grab the angular resolution
-     */    
+     */
     if ((token = strtok(NULL," ")) == NULL) {
       throw SickIOException("SickLMS5xx::_getSickConfig: strtok() failed!");
     }
-    
+
     if (sscanf(token,"%x",&scan_res) == EOF) {
       throw SickIOException("SickLMS5xx::_getSickConfig: sscanf() failed!");
     }
@@ -1024,28 +1025,28 @@ namespace SickToolbox {
 
     /*
      * Grab the start angle
-     */    
+     */
     if ((token = strtok(NULL," ")) == NULL) {
       throw SickIOException("SickLMS5xx::_getSickConfig: strtok() failed!");
     }
-    
+
     if (sscanf(token,"%x",&sick_start_angle) == EOF) {
       throw SickIOException("SickLMS5xx::_getSickConfig: sscanf() failed!");
     }
-    
+
     sick_start_angle = sick_lms_5xx_to_host_byte_order(sick_start_angle);
 
     /*
      * Grab the stop angle
-     */    
+     */
     if ((token = strtok(NULL," ")) == NULL) {
       throw SickIOException("SickLMS5xx::_getSickConfig: strtok() failed!");
     }
-    
+
     if (sscanf(token,"%x",&sick_stop_angle) == EOF) {
       throw SickIOException("SickLMS5xx::_getSickConfig: sscanf() failed!");
     }
-    
+
     sick_stop_angle = sick_lms_5xx_to_host_byte_order(sick_stop_angle);
 
     /*
@@ -1055,10 +1056,10 @@ namespace SickToolbox {
     _sick_scan_config.sick_scan_res = sick_scan_res;
     _sick_scan_config.sick_start_angle = sick_start_angle;
     _sick_scan_config.sick_stop_angle = sick_stop_angle;
-    
+
     /* Success */
 
-  }  
+  }
 
   /**
    * \brief Set the Sick LMS 5xx scan configuration (volatile, does not write to EEPROM)
@@ -1076,17 +1077,17 @@ namespace SickToolbox {
     if (!_validScanArea(start_angle, stop_angle)) {
       throw SickConfigException("SickLMS5xx::_setSickScanConfig - Invalid Sick LMS 5xx Scan Area!");
     }
-    
+
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
 
     std::cout << std::endl << "\t*** Attempting to configure device..." << std::endl;
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
-    
+
     payload_buffer[3]  = ' ';
 
     /* Set the command */
@@ -1109,9 +1110,9 @@ namespace SickToolbox {
 
     /* Desired scanning frequency */
     std::string freq_str = int_to_str((int)scan_freq);
-    
+
     payload_buffer[19] = '+';
-    
+
     for (int i = 0; i < 4; i++) {
       payload_buffer[20+i] = (uint8_t)((freq_str.c_str())[i]);
     }
@@ -1123,12 +1124,12 @@ namespace SickToolbox {
     payload_buffer[26] = '1';
 
     payload_buffer[27] = ' ';
-    
+
     /* Desired angular resolution */
     std::string res_str = int_to_str((int)scan_res);
-    
+
     payload_buffer[28] = '+';
-    
+
     for (int i = 0; i < 4; i++) {
       payload_buffer[29+i] = (uint8_t)((res_str.c_str())[i]);
     }
@@ -1158,11 +1159,11 @@ namespace SickToolbox {
       payload_buffer[idx] = '+';
       idx++;
     }
-    
+
     for (int i = 0; i < stop_angle_str.length(); idx++, i++) {
       payload_buffer[idx] = (uint8_t)(stop_angle_str.c_str())[i];
     }
-        
+
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,idx);
 
@@ -1184,37 +1185,37 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH);
-  
+
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
-    
+
     /* Check if it worked... */
     if (payload_buffer[19] != '0') {
         throw SickErrorException("SickLMS5xx::_setSickScanConfig: " + _intToSickConfigErrorStr(atoi((char *)&payload_buffer[19])));
     }
 
     std::cout << "\t\tDevice configured!" << std::endl << std::endl;
-    
+
     /* Update the scan configuration! */
     try {
 
       _getSickScanConfig();
-      
+
     }
 
     /* Handle a timeout! */
@@ -1222,7 +1223,7 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
@@ -1235,12 +1236,12 @@ namespace SickToolbox {
       throw;
     }
 
-    /* Success! */   
+    /* Success! */
     _printSickScanConfig();
 
   }
 
-  
+
   /**
    * \brief Login as an authorized client
    */
@@ -1248,12 +1249,12 @@ namespace SickToolbox {
 
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
-    
+
     payload_buffer[3]  = ' ';
 
     /* Set the command */
@@ -1269,10 +1270,10 @@ namespace SickToolbox {
     payload_buffer[13] = 'M';
     payload_buffer[14] = 'o';
     payload_buffer[15] = 'd';
-    payload_buffer[16] = 'e';    
+    payload_buffer[16] = 'e';
 
     payload_buffer[17] = ' ';
-    
+
     /* Set as authorized client */
     payload_buffer[18] = '0';
     payload_buffer[19] = '3';
@@ -1297,32 +1298,32 @@ namespace SickToolbox {
 
     /* Send message and get reply using parent's method */
     try {
-      
+
       _sendMessageAndGetReply(send_message, recv_message, "sAN", "SetAccessMode");
 
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_setAuthorizedClientAccessMode: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,29);
-    
+
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
 
@@ -1332,7 +1333,7 @@ namespace SickToolbox {
     }
 
     /* Success! Woohoo! */
-    
+
   }
 
   /**
@@ -1342,12 +1343,12 @@ namespace SickToolbox {
 
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
-    
+
     payload_buffer[3]  = ' ';
 
     /* Set the command */
@@ -1371,32 +1372,32 @@ namespace SickToolbox {
 
     try {
 
-      /* Send message and get reply */      
+      /* Send message and get reply */
       _sendMessageAndGetReply(send_message, recv_message, "sAN", "mEEwriteall");
 
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_writeToEEPROM: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,15);
-    
+
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
 
@@ -1406,7 +1407,7 @@ namespace SickToolbox {
     }
 
     /* Success! Woohoo! */
-    
+
   }
 
   /**
@@ -1416,13 +1417,13 @@ namespace SickToolbox {
 
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
     payload_buffer[3]  = ' ';
-    
+
     /* Set the command */
     payload_buffer[4]  = 'L';
     payload_buffer[5]  = 'M';
@@ -1435,33 +1436,33 @@ namespace SickToolbox {
     payload_buffer[12] = 'm';
     payload_buffer[13] = 'e';
     payload_buffer[14] = 'a';
-    payload_buffer[15] = 's';    
+    payload_buffer[15] = 's';
 
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,16);
-    
+
     /* Setup container for recv message */
     SickLMS5xxMessage recv_message;
 
     try {
 
-      /* Send message and get reply */      
+      /* Send message and get reply */
       _sendMessageAndGetReply(send_message, recv_message, "sAN", "LMCstartmeas");
-      
+
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_startMeasuring: Unknown exception!!!" << std::endl;
@@ -1473,12 +1474,12 @@ namespace SickToolbox {
 
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
-    
+
     /* Check if it worked... */
     if (payload_buffer[17] != '0') {
         throw SickConfigException("SickLMS5xx::_startMeasuring: Unable to start measuring!");
     }
-    
+
   }
 
   /**
@@ -1488,13 +1489,13 @@ namespace SickToolbox {
 
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
     payload_buffer[3]  = ' ';
-    
+
     /* Set the command */
     payload_buffer[4]  = 'L';
     payload_buffer[5]  = 'M';
@@ -1506,50 +1507,50 @@ namespace SickToolbox {
     payload_buffer[11] = 'm';
     payload_buffer[12] = 'e';
     payload_buffer[13] = 'a';
-    payload_buffer[14] = 's';    
-    
+    payload_buffer[14] = 's';
+
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,15);
-    
+
     /* Setup container for recv message */
     SickLMS5xxMessage recv_message;
-    
+
     try {
-      
-      /* Send message and get reply */      
+
+      /* Send message and get reply */
       _sendMessageAndGetReply(send_message, recv_message, "sAN", "LMCstopmeas");
-      
+
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_stopMeasuring: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Reset the buffer (not necessary, but its better to do so just in case) */
     memset(payload_buffer,0,15);
-    
+
     /* Extract the message payload */
     recv_message.GetPayload(payload_buffer);
-    
+
     /* Check if it worked... */
     if (payload_buffer[16] != '0') {
       throw SickConfigException("SickLMS5xx::_stopMeasuring: Unable to start measuring!");
     }
-    
+
   }
 
   /**
@@ -1560,7 +1561,7 @@ namespace SickToolbox {
   void SickLMS5xx::_requestDataStream( ) throw( SickTimeoutException, SickConfigException, SickIOException ) {
 
     std::cout << std::endl << "\tRequesting data stream..." << std::endl;
-    
+
     try {
       /* Wait for device to be measuring */
       _checkForMeasuringStatus();
@@ -1572,25 +1573,25 @@ namespace SickToolbox {
       /* Request the data stream... */
       _startStopStreamingMeasurements(true);
     }
-    
+
     /* Handle config exceptions */
     catch (SickConfigException &sick_config_exception) {
       std::cerr << sick_config_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::SetSickScanArea: Unknown exception!!!" << std::endl;
       throw;
@@ -1599,7 +1600,7 @@ namespace SickToolbox {
     std::cout << "\t\tStream started!" << std::endl;
 
   }
-  
+
   /*
    * \brief Start or stop streaming values
    */
@@ -1607,13 +1608,13 @@ namespace SickToolbox {
 
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
-    
+
     /* Set the command type */
     payload_buffer[0]  = 's';
     payload_buffer[1]  = 'E';
     payload_buffer[2]  = 'N';
     payload_buffer[3]  = ' ';
-    
+
     /* Set the command */
     payload_buffer[4]  = 'L';
     payload_buffer[5]  = 'M';
@@ -1630,7 +1631,7 @@ namespace SickToolbox {
 
     /* Start streaming! */
     payload_buffer[16] = start ? '1' : '0';
-    
+
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,17);
 
@@ -1639,7 +1640,7 @@ namespace SickToolbox {
 
     try {
 
-      /* Send message and get reply */      
+      /* Send message and get reply */
       //_sendMessageAndGetReply(send_message, recv_message, "sSN", "LMDscandata");
       // The "sEN LMDscandata" request is answered by a "sEA LMDscandata 1", and following that,
       // continuous measurement output follows as "sSN LMDscandata".
@@ -1651,13 +1652,13 @@ namespace SickToolbox {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_startStopStreamingMeasurements: Unknown exception!!!" << std::endl;
@@ -1674,7 +1675,7 @@ namespace SickToolbox {
 
     /* Success! */
     _sick_streaming = start ? true : false;
-    
+
   }
 
   /**
@@ -1688,7 +1689,7 @@ namespace SickToolbox {
 
     /* Acquire the elapsed time since epoch */
     gettimeofday(&beg_time,NULL);
-    
+
     /* Get device status */
     _updateSickStatus( );
 
@@ -1723,14 +1724,14 @@ namespace SickToolbox {
           std::cerr << "SickLMS5xx::_checkForMeasuringStatus: Unknown exception!!!" << std::endl;
           throw;
         }
-        
+
       }
 
       /* Sleep a little bit */
       usleep(1000*100);
-      
+
       /* Check whether the allowed time has expired */
-      gettimeofday(&end_time,NULL);    
+      gettimeofday(&end_time,NULL);
       if (_computeElapsedTime(beg_time,end_time) > timeout_value) {
             throw SickTimeoutException("SickLMS5xx::_checkForMeasuringStatus: Timeout occurred!");
       }
@@ -1753,7 +1754,7 @@ namespace SickToolbox {
    * Set device to output only range values
    */
   void SickLMS5xx::_setSickScanDataFormat( const sick_lms_5xx_scan_format_t scan_format ) throw( SickTimeoutException, SickIOException, SickThreadException, SickErrorException ) {
-    
+
     /* Allocate a single buffer for payload contents */
     uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
 
@@ -1762,7 +1763,7 @@ namespace SickToolbox {
     payload_buffer[1]  = 'W';
     payload_buffer[2]  = 'N';
     payload_buffer[3]  = ' ';
-    
+
     /* Set the command */
     payload_buffer[4]  = 'L';
     payload_buffer[5]  = 'M';
@@ -1781,7 +1782,7 @@ namespace SickToolbox {
     payload_buffer[18] = ' ';
 
     /* Reserved */
-    payload_buffer[19] = '0'; 
+    payload_buffer[19] = '0';
     payload_buffer[20] = ' ';
 
     payload_buffer[21] = '0';
@@ -1793,11 +1794,11 @@ namespace SickToolbox {
     else
       payload_buffer[23] = '1';   // 0 = no, 1 = yes
     payload_buffer[24] = ' ';
-    
+
     /* Reserved */
     payload_buffer[25] = '0';
     payload_buffer[26] = ' ';
-    
+
     /* Units (always 0) */
     payload_buffer[27] = '0'; // (0 = digits)
     payload_buffer[28] = ' ';
@@ -1828,7 +1829,7 @@ namespace SickToolbox {
     /* Output interval */
     payload_buffer[41] = '+';  // +1 = send all scans, +2 every second scan, etc
     payload_buffer[42] = '1';
-    
+
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,43);
 
@@ -1837,7 +1838,7 @@ namespace SickToolbox {
 
     try {
 
-      /* Send message and get reply */      
+      /* Send message and get reply */
       _sendMessageAndGetReply(send_message, recv_message, "sWA", "LMDscandatacfg");
 
       /* Reinitialize the Sick so it uses the requested format */
@@ -1845,15 +1846,15 @@ namespace SickToolbox {
 
       /* Set the sick scan data format */
       _sick_scan_format = scan_format;
-      
+
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
@@ -1871,16 +1872,16 @@ namespace SickToolbox {
       std::cerr << sick_error_exception.what() << std::endl;
       throw;
     }
-    
+
     catch (...) {
       std::cerr << "SickLMS5xx::_setSickScanDataFormat: Unknown exception!!!" << std::endl;
       throw;
     }
 
     /* Success! */
-    
+
   }
-  
+
   void SickLMS5xx::_setSickEchoFilter(sick_lms_5xx_echo_filter_t echo_filter) throw( SickTimeoutException, SickIOException, SickErrorException )
   {
     /* Allocate a single buffer for payload contents */
@@ -1973,12 +1974,12 @@ namespace SickToolbox {
     payload_buffer[1]  = 'M';
     payload_buffer[2]  = 'N';
     payload_buffer[3]  = ' ';
-    
+
     /* Set the command */
     payload_buffer[4]  = 'R';
     payload_buffer[5]  = 'u';
     payload_buffer[6]  = 'n';
-    
+
     /* Construct command message */
     SickLMS5xxMessage send_message(payload_buffer,7);
 
@@ -1987,23 +1988,23 @@ namespace SickToolbox {
 
     try {
 
-      /* Send message and get reply */      
+      /* Send message and get reply */
       _sendMessageAndGetReply(send_message, recv_message, "sAN", "Run");
 
     }
-        
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout_exception) {
       std::cerr << sick_timeout_exception.what() << std::endl;
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_exception) {
       std::cerr << sick_io_exception.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_restoreMeasuringMode: Unknown exception!!!" << std::endl;
@@ -2012,7 +2013,7 @@ namespace SickToolbox {
 
     memset(payload_buffer,0,7);
     recv_message.GetPayload(payload_buffer);
-    
+
     /* Check return value */
     if (payload_buffer[8] != '1') {
       std::cerr << "SickLMS5xx::_restoreMeasuringMode: run-requested returned " << payload_buffer[8] << std::endl;
@@ -2022,7 +2023,7 @@ namespace SickToolbox {
     /* Success! */
 
   }
-  
+
   /**
    * \brief Utility function to ensure valid scan area
    */
@@ -2032,7 +2033,7 @@ namespace SickToolbox {
     if (start_angle >= stop_angle) {
       return false;
     }
-    
+
     /* Check angular bounds */
     if (start_angle < SICK_LMS_5XX_SCAN_AREA_MIN_ANGLE || start_angle > SICK_LMS_5XX_SCAN_AREA_MAX_ANGLE) {
       return false;
@@ -2042,7 +2043,7 @@ namespace SickToolbox {
     if (stop_angle < SICK_LMS_5XX_SCAN_AREA_MIN_ANGLE || stop_angle > SICK_LMS_5XX_SCAN_AREA_MAX_ANGLE) {
       return false;
     }
-    
+
     /* Valid! */
     return true;
 
@@ -2054,24 +2055,24 @@ namespace SickToolbox {
   void SickLMS5xx::_sendMessage( const SickLMS5xxMessage &send_message ) const throw( SickIOException ) {
 
     try {
-      
+
       /* Send a message using parent's method */
       SickLIDAR< SickLMS5xxBufferMonitor, SickLMS5xxMessage >::_sendMessage(send_message,0);
-      
+
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_error) {
       std::cerr << sick_io_error.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
     /* Success */
 
   }
@@ -2095,7 +2096,7 @@ namespace SickToolbox {
     /* Construct the expected string */
     std::string expected_str = reply_command_type + " " + reply_command;
     //std::cout << "Waiting for reply: " << expected_str << std::endl;
-    
+
     try {
 
       /* Send a message and get reply using parent's method */
@@ -2103,18 +2104,18 @@ namespace SickToolbox {
       SickLIDAR< SickLMS5xxBufferMonitor, SickLMS5xxMessage >::_sendMessageAndGetReply(send_message,recv_message,(uint8_t *)expected_str.c_str(),expected_str.length(),0,timeout_value,num_tries);
 
     }
-    
+
     /* Handle a timeout! */
     catch (SickTimeoutException &sick_timeout) {
       throw;
     }
-    
+
     /* Handle write buffer exceptions */
     catch (SickIOException &sick_io_error) {
       std::cerr << sick_io_error.what() << std::endl;
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
@@ -2122,7 +2123,7 @@ namespace SickToolbox {
     }
 
     /* Success! */
-    
+
   }
 
   /** \brief Receive a message
@@ -2131,7 +2132,7 @@ namespace SickToolbox {
   void SickLMS5xx::_recvMessage( SickLMS5xxMessage &sick_message ) const throw ( SickTimeoutException ) {
 
     try {
-    
+
       /* Receive message using parent's method */
       SickLIDAR< SickLMS5xxBufferMonitor, SickLMS5xxMessage >::_recvMessage(sick_message,DEFAULT_SICK_LMS_5XX_MESSAGE_TIMEOUT);
 
@@ -2141,13 +2142,13 @@ namespace SickToolbox {
     catch (SickTimeoutException &sick_timeout) {
       throw;
     }
-    
+
     /* A safety net */
     catch (...) {
       std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
       throw;
     }
-    
+
   }
 
   /**
@@ -2191,7 +2192,7 @@ namespace SickToolbox {
     default:
       return "Other Error";
     }
-  
+
   }
 
   /**
@@ -2200,24 +2201,24 @@ namespace SickToolbox {
   void SickLMS5xx::_printSickScanConfig( ) const {
 
     std::cout << "\t========= Sick Scan Config =========" << std::endl;
-    std::cout << "\tScan Frequency: " << ((double)_sick_scan_config.sick_scan_freq)/100 << "(Hz)" << std::endl;  
-    std::cout << "\tScan Resolution: " << ((double)_sick_scan_config.sick_scan_res)/10000 << " (deg)" << std::endl;  
+    std::cout << "\tScan Frequency: " << ((double)_sick_scan_config.sick_scan_freq)/100 << "(Hz)" << std::endl;
+    std::cout << "\tScan Resolution: " << ((double)_sick_scan_config.sick_scan_res)/10000 << " (deg)" << std::endl;
     std::cout << "\tScan Area: " << "[" << ((double)_sick_scan_config.sick_start_angle)/10000 << "," << ((double)_sick_scan_config.sick_stop_angle)/10000 << "]" << std::endl;
     std::cout << "\t====================================" << std::endl;
     std::cout << std::endl << std::flush;
   }
-  
+
   /**
    * \brief Prints the initialization footer.
    */
   void SickLMS5xx::_printInitFooter( ) const {
 
     std::cout << "\t*** Init. complete: Sick LMS 5xx is online and ready!" << std::endl;
-    std::cout << "\tScan Frequency: " << _convertSickFreqUnitsToHz(_sick_scan_config.sick_scan_freq) << "(Hz)" << std::endl;  
+    std::cout << "\tScan Frequency: " << _convertSickFreqUnitsToHz(_sick_scan_config.sick_scan_freq) << "(Hz)" << std::endl;
     std::cout << "\tScan Resolution: " << _convertSickAngleUnitsToDegs(_sick_scan_config.sick_scan_res) << " (deg)" << std::endl;
     std::cout << "\tScan Area: " <<  "[" << _convertSickAngleUnitsToDegs(_sick_scan_config.sick_start_angle) << "," << _convertSickAngleUnitsToDegs(_sick_scan_config.sick_stop_angle) << "]" << std::endl;
     std::cout << std::endl;
-    
+
   }
 
   /**
@@ -2226,7 +2227,7 @@ namespace SickToolbox {
    * \param reflect_opt Reflectivity option corresponding to
    */
   std::string SickLMS5xx::_sickScanDataFormatToString( const sick_lms_5xx_scan_format_t scan_format ) const {
-    
+
     /* Determine the type of distance measurements */
     switch (scan_format) {
     case SICK_LMS_5XX_SCAN_FORMAT_DIST:
@@ -2237,7 +2238,7 @@ namespace SickToolbox {
       return "Unknown";
     }
 
-  } 
+  }
 
   /**
    * \brief Searches a string for a substring
@@ -2252,27 +2253,27 @@ namespace SickToolbox {
   bool SickLMS5xx::_findSubString( const char * const str, const char * const substr,
                                    const unsigned int str_length, const unsigned int substr_length,
                                    unsigned int &substr_pos, unsigned int start_pos ) const {
-    
+
     /* Init substring position */
     substr_pos = 0;
-    
+
     /* Look for the substring */
     bool substr_found = false;
     for (unsigned int i = start_pos; !substr_found && (i < (str_length - substr_length) + 1); i++) {
-      
+
       unsigned int j = 0;
       for (unsigned int k = i; (str[k] == substr[j]) && (j < substr_length); k++, j++);
-      
+
       if (j == substr_length) {
         substr_found = true;
         substr_pos = i;
       }
-      
+
     }
-    
+
     /* Found! */
     return substr_found;
-    
+
   }
 
   /**
@@ -2296,9 +2297,9 @@ namespace SickToolbox {
     }
 
     num_val = (unsigned int)sick_lms_5xx_to_host_byte_order(curr_val);
-    
+
     return str_buffer + strlen(token) + 1;
-    
+
   }
-  
+
 } //namespace SickToolbox
